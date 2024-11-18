@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Alumnus Network API')
-    .setDescription('connect - engage - empower')
+    .setTitle('Finds API')
+    .setDescription('Subleting made easy')
     .setVersion('0.1')
     .build();
   const document = SwaggerModule.createDocument(app, config);
