@@ -2,12 +2,14 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
+import { LoggingService } from 'src/lib/logging/logging.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private logger: LoggingService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -21,6 +23,7 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { email: user.email, sub: user.id, role: user.role };
+    this.logger.log('User logged in', { email: user.email });
     return {
       data: user,
       access_token: await this.jwtService.sign(payload),
@@ -50,10 +53,13 @@ export class AuthService {
         nationality: nationality,
       },
     });
+
+    this.logger.log('User registered', { email: user.email });
     return await user;
   }
 
   async getAll() {
+    this.logger.log('Getting all users');
     return await this.prisma.user.findMany({
       orderBy: { created_at: 'desc' },
     });
