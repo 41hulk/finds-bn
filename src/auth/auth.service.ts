@@ -12,8 +12,10 @@ export class AuthService {
     private logger: LoggingService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: username },
+    });
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { ...result } = user;
       return await result;
@@ -22,10 +24,18 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      username: user.username,
+    };
     this.logger.log('User logged in', { email: user.email });
     return {
-      data: user,
+      data: {
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
       access_token: await this.jwtService.sign(payload),
     };
   }
