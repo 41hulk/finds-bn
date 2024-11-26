@@ -40,7 +40,7 @@ model Property {
   name          String
   description   String
   pricePerNight Float
-  address        String
+  address       String
   created_at    DateTime  @default(now())
   update_at     DateTime  @default(now()) @updatedAt
   deleted_at    DateTime?
@@ -86,4 +86,13 @@ model Favorite {
 
   user     User     @relation(fields: [userId], references: [id])
   property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Waitlister {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  instagram  String?
+  location   String?
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
 }
