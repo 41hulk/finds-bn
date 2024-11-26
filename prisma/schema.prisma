@@ -31,6 +31,7 @@ model User {
   bookings   Booking[]
   Review     Review[]
   Favorite   Favorite[]
+  rfp        rfp[]
 }
 
 model Property {
@@ -95,4 +96,19 @@ model Waitlister {
   location   String?
   created_at DateTime  @default(now())
   deleted_at DateTime?
+}
+
+model rfp {
+  id         String    @id @default(cuid())
+  userId     String
+  username   String
+  git_owner  String
+  git_repo   String
+  git_title  String
+  git_body   String
+  git_url    String
+  status     String
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+  user       User      @relation(fields: [userId], references: [id])
 }
