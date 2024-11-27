@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createPropertyDto.dto';
@@ -25,5 +25,12 @@ export class PropertyController {
     @ReqUser() user: ReqUserType,
   ) {
     return this.propertyService.createProperty(user.id, data);
+  }
+
+  @Get('/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getPropertyById(@Param('id') id: string) {
+    return this.propertyService.getPropertyById(id);
   }
 }

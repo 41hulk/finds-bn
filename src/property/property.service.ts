@@ -70,4 +70,17 @@ export class PropertyService {
       throw new Error(e);
     }
   }
+
+  async getPropertyById(propertyId: string) {
+    try {
+      const res = await this.prisma.property.findUnique({
+        where: { id: propertyId },
+      });
+      this.logger.log(`Property fetched: ${res.id}`);
+      return res;
+    } catch (e) {
+      this.logger.error(`Error fetching property`, e);
+      throw new Error(e);
+    }
+  }
 }
