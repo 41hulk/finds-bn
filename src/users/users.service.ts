@@ -24,6 +24,9 @@ export class UsersService {
 
   async getUserById(userId: string) {
     try {
+      if (!userId) {
+        throw new Error('Missing user id');
+      }
       const res = await this.prisma.user.findUnique({
         where: {
           id: userId,
@@ -34,6 +37,23 @@ export class UsersService {
       this.logger.log('GET USER', res);
     } catch (error) {
       this.logger.error('FAIL TO GET USER', error.message);
+      return error.message;
+    }
+  }
+
+  async updateUsername(username: string, userId: string) {
+    try {
+      if (!userId) {
+        throw new Error('Missing user id');
+      }
+      const res = await this.prisma.user.update({
+        where: { id: userId },
+        data: { username: username },
+      });
+
+      this.logger.log('UPDATE USER', res);
+    } catch (error) {
+      this.logger.error('FAIL TO UPDATE USER', error.message);
       return error.message;
     }
   }
