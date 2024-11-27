@@ -112,3 +112,7 @@ model rfp {
   deleted_at DateTime?
   user       User      @relation(fields: [userId], references: [id])
 }
+
+//TODO: create dtos for all models
+//TODO: fix the booking model to alert the user if the property is already booked
+//TODO: implement github issues
