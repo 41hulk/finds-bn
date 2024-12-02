@@ -9,6 +9,7 @@ async function bootstrap() {
   });
 
   app.enableCors({
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: 'Content-Type,Authorization',
   });

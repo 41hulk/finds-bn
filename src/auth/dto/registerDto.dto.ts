@@ -5,15 +5,15 @@ import { IsString } from 'class-validator';
 export class RegisterDto extends Dto<RegisterDto> {
   @ApiProperty()
   @IsString()
+  username: string;
+
+  @ApiProperty()
+  @IsString()
   email: string;
 
   @ApiProperty()
   @IsString()
   password: string;
-
-  @ApiProperty()
-  @IsString()
-  username: string;
 
   @ApiProperty()
   @IsString()

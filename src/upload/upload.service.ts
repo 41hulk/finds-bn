@@ -58,6 +58,8 @@ export class UploadService {
           Bucket: 'finds-uploader',
           Key: s3ImageKey,
           Body: processedImage,
+          ContentType: 'image/jpeg',
+          ACL: 'public-read',
         }),
       );
 
