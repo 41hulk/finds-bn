@@ -9,5 +9,5 @@ export class UpdatePropertyDto extends Dto<UpdatePropertyDto> {
   description: string;
 
   @IsNumber()
-  pricePerNight: number;
+  pricePerNight: string;
 }

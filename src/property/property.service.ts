@@ -3,23 +3,32 @@ import { LoggingService } from 'src/lib/logging/logging.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePropertyDto } from './dto/createPropertyDto.dto';
 import { UpdatePropertyDto } from './dto/updatePropertyDto.dto';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class PropertyService {
   constructor(
     private prisma: PrismaService,
     private logger: LoggingService,
+    private uploadService: UploadService,
   ) {}
 
-  async createProperty(userId: string, data: CreatePropertyDto) {
-    const { images, name, description, pricePerNight, address } = data;
+  async createProperty(
+    userId: string,
+    data: CreatePropertyDto,
+    files: Express.Multer.File[],
+  ) {
+    const { name, description, pricePerNight, address } = data;
     try {
       if (!userId) {
         throw new PreconditionFailedException('Missing user id');
       }
+
+      const imageUrls = await this.uploadService.upload(files, userId);
+
       const res = await this.prisma.property.create({
         data: {
-          images,
+          images: imageUrls,
           name,
           description,
           pricePerNight,

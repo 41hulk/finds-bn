@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/createPropertyDto.dto';
 import { ReqUser, ReqUserType } from 'src/auth/util/user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Property')
 @Controller('property')
@@ -20,11 +30,14 @@ export class PropertyController {
   @Post('create')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(FilesInterceptor('images', 10))
+  @ApiConsumes('multipart/form-data')
   async createProperty(
     @Body() data: CreatePropertyDto,
+    @UploadedFiles() files: Express.Multer.File[],
     @ReqUser() user: ReqUserType,
   ) {
-    return this.propertyService.createProperty(user.id, data);
+    return this.propertyService.createProperty(user.id, data, files);
   }
 
   @Get('/:id')

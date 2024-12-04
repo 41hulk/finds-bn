@@ -1,12 +1,10 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Dto } from '../../lib/dto/Dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePropertyDto extends Dto<CreatePropertyDto> {
-  @ApiProperty()
-  @IsArray()
-  @IsString({ each: true })
-  images: string[];
+  @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
+  images: any[];
 
   @ApiProperty()
   @IsString()
@@ -17,8 +15,8 @@ export class CreatePropertyDto extends Dto<CreatePropertyDto> {
   description: string;
 
   @ApiProperty()
-  @IsNumber()
-  pricePerNight: number;
+  @IsString()
+  pricePerNight: string;
 
   @ApiProperty()
   @IsString()
