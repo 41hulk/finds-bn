@@ -7,15 +7,112 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  OWNER
+}
+
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
+  id          String    @id @default(cuid())
+  email       String    @unique
   password    String
-  username    String   @unique
+  username    String    @unique
+  role        Role      @default(USER)
   profileUrl  String?
   nationality String
   instagram   String?
   twitter     String?
   linkedin    String?
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
+  update_at   DateTime  @default(now()) @updatedAt
+  deleted_at  DateTime?
+
+  properties Property[]
+  bookings   Booking[]
+  Review     Review[]
+  Favorite   Favorite[]
+  rfp        rfp[]
 }
+
+model Property {
+  id            String    @id @default(cuid())
+  userId        String
+  images        String[]  @default([])
+  name          String
+  description   String
+  pricePerNight String
+  address       String
+  created_at    DateTime  @default(now())
+  update_at     DateTime  @default(now()) @updatedAt
+  deleted_at    DateTime?
+
+  user     User       @relation(fields: [userId], references: [id])
+  bookings Booking[]
+  review   Review[]
+  favorite Favorite[]
+}
+
+model Booking {
+  id         String    @id @default(cuid())
+  propertyId String
+  userId     String
+  checkIn    DateTime
+  checkOut   DateTime
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Review {
+  id         String    @id @default(cuid())
+  userId     String
+  propertyId String
+  rating     Int
+  comment    String?
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Favorite {
+  id         String    @id @default(cuid())
+  userId     String
+  propertyId String
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  user     User     @relation(fields: [userId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Waitlister {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  instagram  String?
+  location   String?
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+}
+
+model rfp {
+  id         String    @id @default(cuid())
+  userId     String
+  username   String
+  git_owner  String
+  git_repo   String
+  git_title  String
+  git_body   String
+  git_url    String
+  status     String
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+//TODO: create dtos for all models
+//TODO: fix the booking model to alert the user if the property is already booked
+//TODO: implement github issues

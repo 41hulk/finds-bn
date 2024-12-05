@@ -12,8 +12,10 @@ export class AuthService {
     private logger: LoggingService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.prisma.user.findUnique({
+      where: { username: username },
+    });
     if (user && (await bcrypt.compare(pass, user.password))) {
       const { ...result } = user;
       return await result;
@@ -22,10 +24,19 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      username: user.username,
+    };
     this.logger.log('User logged in', { email: user.email });
     return {
-      data: user,
+      data: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
       access_token: await this.jwtService.sign(payload),
     };
   }
@@ -36,26 +47,34 @@ export class AuthService {
     username: string,
     nationality: string,
   ) {
-    const hashedPassword = await bcrypt.hash(pass, 10);
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: email },
-    });
+    try {
+      const hashedPassword = await bcrypt.hash(pass, 10);
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: email },
+      });
 
-    if (existingUser) {
-      throw new ConflictException('user already exists');
+      if (existingUser) {
+        throw new ConflictException('user already exists');
+      }
+      const user = await this.prisma.user.create({
+        data: {
+          email: email,
+          password: hashedPassword,
+          username: username,
+          nationality: nationality,
+        },
+      });
+
+      if (user.id) {
+        this.logger.log('User registered', { username: user.username });
+        return this.login(user);
+      }
+
+      return await user;
+    } catch (error) {
+      this.logger.error('Error registering user', error);
+      throw error;
     }
-
-    const user = await this.prisma.user.create({
-      data: {
-        email: email,
-        password: hashedPassword,
-        username: username,
-        nationality: nationality,
-      },
-    });
-
-    this.logger.log('User registered', { email: user.email });
-    return await user;
   }
 
   async getAll() {

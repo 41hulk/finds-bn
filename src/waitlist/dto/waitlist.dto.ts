@@ -1,21 +1,17 @@
-import { Dto } from 'src/lib/dto/Dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { Dto } from 'src/lib/dto/Dto';
 
-export class RegisterDto extends Dto<RegisterDto> {
-  @ApiProperty()
-  @IsString()
-  username: string;
-
+export class WaitlistDto extends Dto<WaitlistDto> {
   @ApiProperty()
   @IsString()
   email: string;
 
   @ApiProperty()
   @IsString()
-  password: string;
+  instagram: string;
 
   @ApiProperty()
   @IsString()
-  nationality: string;
+  location: string;
 }

@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LoginDto extends Dto<LoginDto> {
   @ApiProperty()
   @IsString()
-  email: string;
+  username: string;
 
   @ApiProperty()
   @IsString()
