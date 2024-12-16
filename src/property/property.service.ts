@@ -85,7 +85,7 @@ export class PropertyService {
           id: property.id,
           images: property.images,
           name: property.name,
-          desription: property.description,
+          description: property.description,
           pricePerNight: property.pricePerNight,
           address: property.address,
           user: new OwnerDto({

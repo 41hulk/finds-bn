@@ -19,7 +19,7 @@ export class PropertyDto extends Dto<PropertyDto> {
 
   @ApiProperty()
   @IsNotEmpty()
-  desription: string;
+  description: string;
 
   @ApiProperty()
   @IsNotEmpty()
