@@ -90,7 +90,7 @@ export class PropertyService {
           address: property.address,
           user: new OwnerDto({
             id: property.user.id,
-            profileUrl: property.user.avatar,
+            avatar: property.user.avatar,
             username: property.user.username,
           }),
         });

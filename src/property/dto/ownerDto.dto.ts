@@ -6,7 +6,7 @@ export class OwnerDto extends Dto<OwnerDto> {
   id: string;
 
   @ApiProperty()
-  profileUrl: string;
+  avatar: string;
 
   @ApiProperty()
   username: string;
