@@ -1,13 +1,9 @@
--- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'OWNER');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'USER',
     "avatar" TEXT,
     "nationality" TEXT,
     "instagram" TEXT,
