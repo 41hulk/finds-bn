@@ -2,4 +2,4 @@
 
 Sublet you place and save on rent
 
-Developed by Guy Ntare
+Developed by Guy Ntare >
