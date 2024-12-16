@@ -4,6 +4,8 @@ import { PrismaService } from 'src/prisma.service';
 import { CreatePropertyDto } from './dto/createPropertyDto.dto';
 import { UpdatePropertyDto } from './dto/updatePropertyDto.dto';
 import { UploadService } from 'src/upload/upload.service';
+import { PropertyDto } from './dto/propertyDto.dto';
+import { OwnerDto } from './dto/ownerDto.dto';
 
 @Injectable()
 export class PropertyService {
@@ -18,7 +20,7 @@ export class PropertyService {
     data: CreatePropertyDto,
     files: Express.Multer.File[],
   ) {
-    const { name, description, pricePerNight, address } = data;
+    const { name, description, pricePerNight, address, desiredRenter } = data;
     try {
       if (!userId) {
         throw new PreconditionFailedException('Missing user id');
@@ -33,6 +35,7 @@ export class PropertyService {
           description,
           pricePerNight,
           address,
+          desiredRenter,
           user: { connect: { id: userId } },
         },
       });
@@ -71,9 +74,27 @@ export class PropertyService {
 
   async getAllProperties() {
     try {
-      const res = await this.prisma.property.findMany();
+      const res = await this.prisma.property.findMany({
+        where: { deleted_at: null },
+        include: { user: true },
+        orderBy: { created_at: 'desc' },
+      });
       this.logger.log(`All properties fetched`);
-      return res;
+      return res.map((property) => {
+        return new PropertyDto({
+          id: property.id,
+          images: property.images,
+          name: property.name,
+          desription: property.description,
+          pricePerNight: property.pricePerNight,
+          address: property.address,
+          user: new OwnerDto({
+            id: property.user.id,
+            profileUrl: property.user.avatar,
+            username: property.user.username,
+          }),
+        });
+      });
     } catch (e) {
       this.logger.error(`Error fetching properties`, e);
       throw new Error(e);
