@@ -113,4 +113,17 @@ export class PropertyService {
       throw new Error(e);
     }
   }
+
+  async getMyProperty(userId: string) {
+    try {
+      const res = await this.prisma.property.findMany({
+        where: { userId: userId, deleted_at: null },
+      });
+      this.logger.log(`fetching properties for user ${userId}`);
+      return res;
+    } catch (e) {
+      this.logger.error(`Error fetching properties for user ${userId}`, e);
+      throw new Error(e);
+    }
+  }
 }
