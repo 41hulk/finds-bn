@@ -40,7 +40,7 @@ export class PropertyController {
     return this.propertyService.createProperty(user.id, data, files);
   }
 
-  @Get('myproperty/')
+  @Get('myproperty')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async getMyProperty(@ReqUser() user: ReqUserType) {
