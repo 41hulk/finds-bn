@@ -14,8 +14,4 @@ export class RegisterDto extends Dto<RegisterDto> {
   @ApiProperty()
   @IsString()
   password: string;
-
-  @ApiProperty()
-  @IsString()
-  nationality: string;
 }

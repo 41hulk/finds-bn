@@ -4,6 +4,9 @@ import { Dto } from 'src/lib/dto/Dto';
 
 export class ProfileDto extends Dto<ProfileDto> {
   @ApiProperty()
+  id: string;
+
+  @ApiProperty()
   @IsString()
   email: string;
 
@@ -14,6 +17,10 @@ export class ProfileDto extends Dto<ProfileDto> {
   @ApiProperty()
   @IsString()
   role: string;
+
+  @ApiProperty()
+  @IsString()
+  profileUrl: string;
 
   @ApiProperty()
   @IsString()
