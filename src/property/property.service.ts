@@ -77,7 +77,7 @@ export class PropertyService {
       const res = await this.prisma.property.findMany({
         where: { deleted_at: null },
         include: { user: true },
-        orderBy: { created_at: 'desc' },
+        orderBy: { created_at: 'asc' },
       });
       this.logger.log(`All properties fetched`);
       return res.map((property) => {
@@ -105,6 +105,7 @@ export class PropertyService {
     try {
       const res = await this.prisma.property.findUnique({
         where: { id: propertyId },
+        include: { user: true },
       });
       this.logger.log(`Property fetched: ${res.id}`);
       return res;
@@ -117,10 +118,25 @@ export class PropertyService {
   async getMyProperty(userId: string) {
     try {
       const res = await this.prisma.property.findMany({
-        where: { userId: userId, deleted_at: null },
+        where: { userId: userId },
+        include: { user: true },
       });
       this.logger.log(`fetching properties for user ${userId}`);
-      return res;
+      return res.map((property) => {
+        return new PropertyDto({
+          id: property.id,
+          images: property.images,
+          name: property.name,
+          description: property.description,
+          pricePerNight: property.pricePerNight,
+          address: property.address,
+          user: new OwnerDto({
+            id: property.user.id,
+            avatar: property.user.avatar,
+            username: property.user.username,
+          }),
+        });
+      });
     } catch (e) {
       this.logger.error(`Error fetching properties for user ${userId}`, e);
       throw new Error(e);
