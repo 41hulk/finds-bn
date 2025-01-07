@@ -21,4 +21,8 @@ export class CreatePropertyDto extends Dto<CreatePropertyDto> {
   @ApiProperty()
   @IsString()
   address: string;
+
+  @ApiProperty()
+  @IsString()
+  desiredRenter: string;
 }
